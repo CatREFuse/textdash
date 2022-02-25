@@ -1,49 +1,42 @@
-<template>
-<div id="ui">
-	<button class="button button--primary" @click='createNode'> Create a Vue3 node </button>
-	<p class="type type--pos-small-normal"> {{message}} </p>
-</div>
-</template>
-
-<script>
+<script setup lang='ts'>
 import styles from 'figma-plugin-ds/dist/figma-plugin-ds.css'
-import {
-  dispatch,
-  handleEvent
-} from "./uiMessageHandler";
-import {
-  onMounted,
-  ref
-} from 'vue';
+import { onMounted, ref } from 'vue';
+import { handleEvent, dispatch } from './uiMessageHandler';
 
-export default {
-  setup() {
+let textNodeArray = ref([] as TextNode[])
 
-    const message = ref("")
+onMounted(() => {
+  handleEvent("selectionchange", data => {
+    console.log("ui detect change");
+    textNodeArray.value = data.textNodeArray
+  })
+})
 
-    function createNode() {
-      // This shows how the UI code can send messages to the main code.
-      dispatch("createNode");
-    }
-    onMounted(() => {
+function handleChange(event: Event, textNode: TextNode) {
+  dispatch('change-text', { id: textNode.id, characters: textNode.characters })
+}
 
-      // The following shows how messages from the main code can be handled in the UI code.
-      handleEvent("nodeCreated", nodeID => {
-        message.value = `Node ${nodeID} was created!`;
-      });
-    })
 
-    return {
-      message,
-      createNode
-    };
-  }
-
-};
 </script>
 
+
+<template>
+  <div id="ui">
+    <h3>Text Dash</h3>
+    <p>🖋</p>
+    <div id="input-container">
+      <div v-for="(item, index) in textNodeArray" :key="index">
+        <h6>name: {{ item.name }}, id: {{ item.id }}</h6>
+        <input type="text" v-model="item.characters" @change="handleChange($event, item)" />
+      </div>
+    </div>
+  </div>
+</template>
+
+
+
 <style scoped>
-#ui{
+#ui {
   display: flex;
   flex-direction: column;
   align-items: center;
