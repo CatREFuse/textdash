@@ -1,8 +1,10 @@
 {
-	"name": "TEXT DASH",
+	"name": "Text Dash",
 	"api": "1.0.0",
 	"main": "dist/code.js",
 	"ui": "dist/ui.html",
-	"id": "my-plugin-id",
-	"editorType": ["figma"]
+	"id": "1079106521296038553",
+	"editorType": [
+		"figma"
+	]
 }
