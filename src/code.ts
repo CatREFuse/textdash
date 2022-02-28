@@ -24,6 +24,10 @@ handleEvent('change-text', async (data) => {
     // console.log('font loaded');
 
     node.characters = data.characters;
+
+    rect.x = node.absoluteTransform[0][2];
+    rect.y = node.absoluteTransform[1][2];
+    rect.resize(node.width, node.height);
 });
 
 function selectionHandler() {
@@ -83,10 +87,17 @@ handleEvent('input-focus', (data) => {
 
     let highlight = clone(rect.fills);
 
-	highlight[0].color = { r: 122 / 256, g: 98 / 256, b: 249 / 256 };
-	
+    highlight[0].color = { r: 122 / 256, g: 98 / 256, b: 249 / 256 };
+    highlight[0].opacity = 0;
+
+    let highlightStroke = clone(rect.strokes);
+    highlightStroke.push({
+        type: 'SOLID',
+        color: { r: 122 / 256, g: 98 / 256, b: 249 / 256 },
+    });
 
     rect.fills = highlight;
+    rect.strokes = highlightStroke;
     const absoluteTextNodePostion = {
         x: textNode.absoluteTransform[0][2],
         y: textNode.absoluteTransform[1][2],
@@ -104,9 +115,14 @@ handleEvent('input-focus', (data) => {
 
     console.log(width);
 
-    rect.x = absoluteTextNodePostion.x - width * 2;
+    rect.strokeWeight = width / 3;
+    rect.strokeAlign = 'OUTSIDE';
+
+    // rect.x = absoluteTextNodePostion.x - width * 2;
+    rect.x = absoluteTextNodePostion.x;
     rect.y = absoluteTextNodePostion.y;
-    rect.resize(width, textNode.height);
+    // rect.resize(width, textNode.height);
+    rect.resize(textNode.width, textNode.height);
 });
 
 handleEvent('input-blur', (data) => {
