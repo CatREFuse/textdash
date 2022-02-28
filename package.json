@@ -11,6 +11,8 @@
 	"dependencies": {
 		"@frsource/autoresize-textarea": "^1.2.1",
 		"@vue/compiler-sfc": "^3.0.2",
+		"autoresize": "^0.1.1",
+		"autosize": "^5.0.1",
 		"figma-plugin-ds": "^0.1.9",
 		"textarea-autoresize": "^2.0.9"
 	},

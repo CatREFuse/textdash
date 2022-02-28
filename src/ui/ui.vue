@@ -2,7 +2,9 @@
 import { onMounted, ref, watch, reactive } from "vue";
 import { handleEvent, dispatch } from "./uiMessageHandler";
 import "figma-plugin-ds/dist/figma-plugin-ds.css";
-// import { attach } from "@frsource/autoresize-textarea";
+import { attach } from "@frsource/autoresize-textarea";
+import { nextTick } from "process";
+
 
 let textNodeArray = ref([] as TextNode[]);
 
@@ -14,7 +16,7 @@ onMounted(() => {
 
   handleEvent("selectionchange", (data) => {
     console.log("ui detect change");
-    console.log(data.textNodeArray);
+    // console.log(data.textNodeArray);
 
     state.isSelected = data.select
 
@@ -22,18 +24,26 @@ onMounted(() => {
     // setTimeout(() => {
     //   document.getElementById("0")?.focus()
     // }, 10)
-    // console.log(document.getElementsByTagName("textarea"));
 
-    // for (const textarea of document.getElementsByTagName("textarea")) {
-    //   const buffer = textarea.value;
-    //   textarea.value = " ";
-    //   textarea.value = buffer;
-    //   console.log("attach");
-    //   attach(textarea);
-    // }
+    nextTick(() => {
+      for (const textarea of document.querySelectorAll(".textarea")) {
+
+        attach(textarea);
+        console.log("attach");
+
+      }
+    })
+
+
+
   });
 
 });
+
+
+
+
+
 
 function handleChange(event: Event, textNode: TextNode) {
   console.log("onchange");
@@ -90,7 +100,7 @@ function handleBlur(event: FocusEvent, item: TextNode) {
     </div>
 
     <div id="input-container" v-if="textNodeArray.length != 0">
-      <div v-for="(item, index) in textNodeArray" :key="index" class>
+      <div v-for="(item, index) in textNodeArray" :key="item.id" class>
         <div class="head-container type">
           <div class="icon t">𝚃</div>
           <div class id="input-head">{{ item.autoRename ? "Auto Rename Layer" : item.name }}</div>
@@ -102,7 +112,7 @@ function handleBlur(event: FocusEvent, item: TextNode) {
           @input="handleChange($event, item)"
           @keypress.enter="toNextInput($event, index)"
           :id="index.toString()"
-          rows="2"
+          rows="1"
           class="textarea"
           @focus="handleFocus($event, item)"
           @blur="handleBlur($event, item)"
@@ -163,8 +173,8 @@ function handleBlur(event: FocusEvent, item: TextNode) {
 }
 
 .textarea {
-  resize: vertical;
-  min-height: 24px !important;
+  /* resize: vertical; */
+  min-height: 12px !important;
 }
 
 .tips {

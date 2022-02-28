@@ -21,7 +21,7 @@ handleEvent('change-text', async (data) => {
         await figma.loadFontAsync(node.fontName as FontName);
     }
 
-    console.log('font loaded');
+    // console.log('font loaded');
 
     node.characters = data.characters;
 });
@@ -44,7 +44,7 @@ function selectionHandler() {
     }
     // 当选项发生了变化
 
-    console.log('current selection', figma.currentPage.selection);
+    // console.log('current selection', figma.currentPage.selection);
 
     let textNodeArray = [] as TextNode[];
 
@@ -52,7 +52,7 @@ function selectionHandler() {
         textNodeArray.push(...getAllTextNodes(node));
     }
 
-    console.log('text selection', textNodeArray);
+    // console.log('text selection', textNodeArray);
 
     // 预处理
 
@@ -83,7 +83,8 @@ handleEvent('input-focus', (data) => {
 
     let highlight = clone(rect.fills);
 
-    highlight[0].color = { r: 122 / 256, g: 98 / 256, b: 249 / 256 };
+	highlight[0].color = { r: 122 / 256, g: 98 / 256, b: 249 / 256 };
+	
 
     rect.fills = highlight;
     const absoluteTextNodePostion = {
