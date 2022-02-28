@@ -44,11 +44,7 @@ function selectionHandler() {
     }
     // 当选项发生了变化
 
-    // console.log('current selection', figma.currentPage.selection);
-
-    if (figma.currentPage.selection.length == 0) {
-        return;
-    }
+    console.log('current selection', figma.currentPage.selection);
 
     let textNodeArray = [] as TextNode[];
 
@@ -65,10 +61,14 @@ function selectionHandler() {
             id: textNode.id,
             name: textNode.name,
             characters: textNode.characters,
+            autoRename: textNode.autoRename,
         };
     });
 
-    dispatch('selectionchange', { textNodeArray: postArray });
+    dispatch('selectionchange', {
+        textNodeArray: postArray,
+        select: figma.currentPage.selection.length != 0,
+    });
 }
 
 figma.on('selectionchange', selectionHandler);

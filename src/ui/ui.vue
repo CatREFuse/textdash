@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, reactive } from "vue";
 import { handleEvent, dispatch } from "./uiMessageHandler";
 import "figma-plugin-ds/dist/figma-plugin-ds.css";
 // import { attach } from "@frsource/autoresize-textarea";
 
 let textNodeArray = ref([] as TextNode[]);
 
+let state = reactive({
+  isSelected: false
+})
+
 onMounted(() => {
+
   handleEvent("selectionchange", (data) => {
     console.log("ui detect change");
+    console.log(data.textNodeArray);
+
+    state.isSelected = data.select
+
     textNodeArray.value = data.textNodeArray;
     // setTimeout(() => {
     //   document.getElementById("0")?.focus()
     // }, 10)
-    console.log(document.getElementsByTagName("textarea"));
+    // console.log(document.getElementsByTagName("textarea"));
 
     // for (const textarea of document.getElementsByTagName("textarea")) {
     //   const buffer = textarea.value;
@@ -23,6 +32,7 @@ onMounted(() => {
     //   attach(textarea);
     // }
   });
+
 });
 
 function handleChange(event: Event, textNode: TextNode) {
@@ -50,21 +60,40 @@ function handleBlur(event: FocusEvent, item: TextNode) {
 </script>
 
 <template>
-  <div id="ui">
-    <div
-      class="type type--large type-bold"
-      v-if="textNodeArray.length == 0"
-    >🧐 select something to edit text inside</div>
-    <!-- <div
-      v-else
-      class="type type--large type-bold"
-    >{{ textNodeArray.length }} text nodes found in your selection</div>-->
+  <div
+    class="img-container"
+    v-if="state.isSelected == false"
+    style="width: 100%;display: flex;flex-direction: column;align-items: center;"
+  >
+    <img
+      src="./default.png"
+      alt="seletc any layer to go"
+      style="width: 117px;height: 116px;margin: auto"
+    />
+  </div>
 
-    <div id="input-container">
+  <div id="ui" v-else>
+    <div
+      class="info"
+      :style="{
+        'background-color': textNodeArray.length == 0 ? 'F8EAE5' : 'E4F2FE'
+      }"
+    >
+      <div class="icon icon--search"></div>
+      <div
+        class="type"
+      >{{ `${textNodeArray.length} text ${textNodeArray.length == 1 ? 'layer' : 'layers'} found in your selection` }}</div>
+    </div>
+
+    <div class="img-container" v-if="textNodeArray.length == 0">
+      <img src="./404.png" alt="no text layer found" style="width: 145px;height: 58px" />
+    </div>
+
+    <div id="input-container" v-if="textNodeArray.length != 0">
       <div v-for="(item, index) in textNodeArray" :key="index" class>
-        <div class="head-container">
-          <div class="icon">𝚃</div>
-          <div class="type type--medium type--bold" id="input-head">{{ item.name }}</div>
+        <div class="head-container type">
+          <div class="icon t">𝚃</div>
+          <div class id="input-head">{{ item.autoRename ? "Auto Rename Layer" : item.name }}</div>
         </div>
 
         <textarea
@@ -81,11 +110,14 @@ function handleBlur(event: FocusEvent, item: TextNode) {
       </div>
     </div>
 
-    <div class="tips">
-      <div class="type">
+    <div class="tips type" v-if="textNodeArray.length != 0">
+      <div>
+        <strong>Tips:</strong>
+      </div>
+      <div>
         <strong>⇥ tab</strong>: switch to the next one
       </div>
-      <div class="type">
+      <div>
         <strong>⇧ shift + ⇥ tab</strong>: switch to the previous one
       </div>
     </div>
@@ -94,7 +126,10 @@ function handleBlur(event: FocusEvent, item: TextNode) {
 
 <style scoped>
 #ui {
-  padding: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 #input-head {
@@ -111,11 +146,14 @@ function handleBlur(event: FocusEvent, item: TextNode) {
   justify-content: flex-start;
 }
 
+.icon .t {
+  transform: scale(1.2, 1);
+}
+
 .icon {
   height: 24px;
   width: 24px;
   font-size: 16px;
-  transform: scale(1.2, 1);
 }
 
 #input-container {
@@ -130,6 +168,27 @@ function handleBlur(event: FocusEvent, item: TextNode) {
 }
 
 .tips {
-  margin-top: 16px;
+  /* margin-top: 16px; */
+}
+
+.head-container {
+  color: #b2b2b2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+  gap: 4px;
+  border-radius: 4px;
+}
+
+.img-container {
+  align-self: center;
+  margin: 64px 0;
 }
 </style>
