@@ -5,20 +5,18 @@ import "figma-plugin-ds/dist/figma-plugin-ds.css";
 import { attach } from "@frsource/autoresize-textarea";
 import { nextTick } from "process";
 
-
 let textNodeArray = ref([] as TextNode[]);
 
 let state = reactive({
-  isSelected: false
-})
+  isSelected: false,
+});
 
 onMounted(() => {
-
   handleEvent("selectionchange", (data) => {
     console.log("ui detect change");
     // console.log(data.textNodeArray);
 
-    state.isSelected = data.select
+    state.isSelected = data.select;
 
     textNodeArray.value = data.textNodeArray;
     // setTimeout(() => {
@@ -27,23 +25,12 @@ onMounted(() => {
 
     nextTick(() => {
       for (const textarea of document.querySelectorAll(".textarea")) {
-
         attach(textarea);
         console.log("attach");
-
       }
-    })
-
-
-
+    });
   });
-
 });
-
-
-
-
-
 
 function handleChange(event: Event, textNode: TextNode) {
   console.log("onchange");
@@ -73,12 +60,12 @@ function handleBlur(event: FocusEvent, item: TextNode) {
   <div
     class="img-container"
     v-if="state.isSelected == false"
-    style="width: 100%;display: flex;flex-direction: column;align-items: center;"
+    style="width: 100%; display: flex; flex-direction: column; align-items: center"
   >
     <img
       src="./default.png"
       alt="seletc any layer to go"
-      style="width: 117px;height: 116px;margin: auto"
+      style="width: 117px; height: 116px; margin: auto"
     />
   </div>
 
@@ -86,24 +73,30 @@ function handleBlur(event: FocusEvent, item: TextNode) {
     <div
       class="info"
       :style="{
-        'background-color': textNodeArray.length == 0 ? 'F8EAE5' : 'E4F2FE'
+        'background-color': textNodeArray.length == 0 ? 'F8EAE5' : 'E4F2FE',
       }"
     >
       <div class="icon icon--search"></div>
-      <div
-        class="type"
-      >{{ `${textNodeArray.length} text ${textNodeArray.length == 1 ? 'layer' : 'layers'} found in your selection` }}</div>
+      <div class="type">
+        {{
+          `${textNodeArray.length} text ${
+            textNodeArray.length == 1 ? "layer" : "layers"
+          } found in your selection`
+        }}
+      </div>
     </div>
 
     <div class="img-container" v-if="textNodeArray.length == 0">
-      <img src="./404.png" alt="no text layer found" style="width: 145px;height: 58px" />
+      <img src="./404.png" alt="no text layer found" style="width: 145px; height: 58px" />
     </div>
 
     <div id="input-container" v-if="textNodeArray.length != 0">
       <div v-for="(item, index) in textNodeArray" :key="item.id" class>
         <div class="head-container type">
           <div class="icon t">𝚃</div>
-          <div class id="input-head">{{ item.autoRename ? "Auto Rename Layer" : item.name }}</div>
+          <div class id="input-head">
+            {{ item.autoRename ? "Auto Rename Layer" : item.name }}
+          </div>
         </div>
 
         <textarea
@@ -124,17 +117,17 @@ function handleBlur(event: FocusEvent, item: TextNode) {
       <div>
         <strong>Tips:</strong>
       </div>
-      <div>
-        <strong>⇥ tab</strong>: switch to the next one
-      </div>
-      <div>
-        <strong>⇧ shift + ⇥ tab</strong>: switch to the previous one
-      </div>
+      <div><strong>⇥ tab</strong>: switch to the next one</div>
+      <div><strong>⇧ shift + ⇥ tab</strong>: switch to the previous one</div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style>
+#app {
+  background-color: var(--figma-color-bg);
+}
+
 #ui {
   padding: 24px;
   display: flex;

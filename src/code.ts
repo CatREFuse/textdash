@@ -21,8 +21,6 @@ handleEvent('change-text', async (data) => {
         await figma.loadFontAsync(node.fontName as FontName);
     }
 
-    // console.log('font loaded');
-
     node.characters = data.characters;
 
     rect.x = node.absoluteTransform[0][2];
